@@ -40,5 +40,5 @@ for subdomain in subdomains:
         # Discord webhook ile mesaj gönderin
 requests.post(webhook_url, json.dumps({"content": f"{domain} için Yeni subdomain bulundu: " + subdomain}), headers={"Content-Type": "application/json"})
 
-# 6 saat bekle
+#3 saat bekle
 time.sleep(10800)
