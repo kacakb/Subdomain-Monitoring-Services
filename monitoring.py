@@ -3,42 +3,48 @@ import requests
 import json
 import time
 
-# Redis database bağlantısı
+# Redis veritabanı bağlantısı
 r = redis.Redis(host='localhost', port=6379, db=0)
 
-# Securitytrails API endpoint'ini tanımlayın
+# SecurityTrails api key tanımla
 securitytrails_api_key = "YOUR_API_KEY"
-securitytrails_endpoint = "https://api.securitytrails.com/v1/domain/google.com/subdomains"
 
-# Discord webhook url'ini tanımlayın
-webhook_url = "YOUR_DISCORD_WEBHOOK_URL"
+# Discord api web hook url tanımla
+webhook_url = "YOUR_DISCORD_WEB_HOOK"
 
+# Domainleri tanımla
+domains = ["domain1", "domain2"]
 
-domains = ["x.com", "y.com"]
-# 6 saatte bir çalışacak döngü
+# Loop that will run every 6 hours
 while True:
+    for domain in domains:
+        securitytrails_endpoint = f"https://api.securitytrails.com/v1/domain/{domain}/subdomains"
+        try:
+            response = requests.get(securitytrails_endpoint + "?apikey=" + securitytrails_api_key, headers={'Content-Type': 'application/json'})
+            data = response.json()
+        except:
+            print(f"Error getting data for {domain}")
+            continue
 
-                securitytrails_endpoint = f"https://api.securitytrails.com/v1/domain/{domains}/subdomains"
+        try:
+            # Get subdomains as an array
+            subdomains = data["subdomains"]
+        except KeyError:
+            print(f"Subdomains not found for {domain}")
+            continue
 
-   
-response = requests.get(securitytrails_endpoint + "?apikey=" + securitytrails_api_key, headers={'Content-Type': 'application/json'})
-data = response.json()
+        # Loop through each subdomain
+        for subdomain in subdomains:
+            # Check if the subdomain exists in Redis
+            exists = r.sismember(f"{domain}_subdomains",subdomain)
 
-# Subdomainleri bir dizi olarak alın
-subdomains = data["subdomains"]
+            # Eğer subdomain, rediste mevcut değilse discord webhookua mesaj gönder.
+            if not exists:
+                # Add the subdomain to Redis
+                r.sadd(f"{domain}_subdomains", subdomain)
 
-# Her subdomain için döngü
-for subdomain in subdomains:
-    # Subdomaini redis'te var mı kontrol edin
-    exists = r.sismember(f"{domain}_subdomains",subdomain)
+                # Send a message through the Discord webhook
+                requests.post(webhook_url, json.dumps({"content": f"New subdomain found for {domain}: " + subdomain}), headers={"Content-Type": "application/json"})
 
-    # Redis'te yoksa
-    if not exists:
-        # Subdomaini redis'e ekleyin
-         r.sadd(f"{domain}_subdomains", subdomain)
-
-        # Discord webhook ile mesaj gönderin
-requests.post(webhook_url, json.dumps({"content": f"{domain} için Yeni subdomain bulundu: " + subdomain}), headers={"Content-Type": "application/json"})
-
-#3 saat bekle
-time.sleep(10800)
+    # 1 Saat bekle
+    time.sleep(3600)
