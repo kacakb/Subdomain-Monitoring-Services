@@ -15,7 +15,7 @@ webhook_url = "YOUR_DISCORD_WEB_HOOK"
 # Domainleri tanımla
 domains = ["domain1", "domain2"]
 
-# Loop that will run every 6 hours
+# Her bir saatte istekleri döngüye sok
 while True:
     for domain in domains:
         securitytrails_endpoint = f"https://api.securitytrails.com/v1/domain/{domain}/subdomains"
@@ -27,7 +27,7 @@ while True:
             continue
 
         try:
-            # Get subdomains as an array
+            # Subdomainleri array olarak al
             subdomains = data["subdomains"]
         except KeyError:
             print(f"Subdomains not found for {domain}")
@@ -35,7 +35,7 @@ while True:
 
         # Loop through each subdomain
         for subdomain in subdomains:
-            # Check if the subdomain exists in Redis
+            # Subdomainle redis veritabanında mevcut mu 
             exists = r.sismember(f"{domain}_subdomains",subdomain)
 
             # Eğer subdomain, rediste mevcut değilse discord webhookua mesaj gönder.
@@ -43,7 +43,7 @@ while True:
                 # Add the subdomain to Redis
                 r.sadd(f"{domain}_subdomains", subdomain)
 
-                # Send a message through the Discord webhook
+                # Eğer mevcut değilse discord web hookuna mesaj gönder
                 requests.post(webhook_url, json.dumps({"content": f"New subdomain found for {domain}: " + subdomain}), headers={"Content-Type": "application/json"})
 
     # 1 Saat bekle
