@@ -1,7 +1,9 @@
 Türkçe
 
 Kodun çalışması için gereksinimler:
+
 1.Redis sunucusunu kurmalısınız.
+
 2.Discord webhook domaini alarak Bot oluşturmalısınız.(Ben discord webhook kullandım siz farklı bir webhook kullanabilirsiniz.Kullandığımız web hooku kodda tanımlamalısınız.)
 
 Kod nasıl çalışır:
