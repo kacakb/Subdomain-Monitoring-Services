@@ -4,7 +4,7 @@ Kodun çalışması için gereksinimler:
 
 1.Redis sunucusunu kurmalısınız.
 
-2.Discord webhook domaini alarak Bot oluşturmalısınız.(Ben discord webhook kullandım.Siz farklı bir webhook kullanabilirsiniz.Kullandığınız web hooku kodda tanımlamalısınız.)
+2.Discord sunucunuz'a webhook url'i tanımlamalısınız.(Ben discord webhook kullandım.Siz farklı bir webhook kullanabilirsiniz.Kullandığınız web hooku kodda tanımlamalısınız.)
 
 Kod nasıl çalışır:
 
@@ -15,6 +15,29 @@ sleep(int) int değişkeni içerisine yazdığımız değer secutriytrails'in ap
 Örneğin, 3 saat olarak belirleyecekseniz: sleep(10800)
 
 Üç saatte bir securitytrails'e belirtilen domainlerin, subdomainlerine istek atar.Daha önce redis sunucusunda depolanan subdomainler, yeni atılan istekteki(3 saat sonra)subdomainlerde bulunmazsa.Discord webhookuna -> {domain} için Yeni subdomain bulundu {{Subdomain}} bildirisi gönderilir.
+Her atılan istekte bulunmayan subdomainler, redis sunucusuna eklenir.
+
+Redis sunucusunu yükleyip,kurduktan sonra:
+  "redis-server &" komutu ile redis sunucunuzu başlatabilirsiniz.
+
+  "redis-cli" komutu ile redis komut satırınıa ulaşabilirsiniz.
+
+  'KEYS *' komutu ile varolan keylerinizi görüntüleyebilirsiniz. :
+
+      Domain değişkenine tanımladığınız root domainler, redis'te anahtar şeklinde depolanır. Örneğin:
+        domain = ["x.com", "y.com"]
+       
+/
+redis-cli
+KEYS *
+x.com_subdomains
+y.com_subdomains
+/
+
+Rediste depolanan verileri görüntülemek için bir python kodu ekledim.Hangi key'de depolanan veriyi görüntelemek istiyorsanız ona göre KEYS değişkenini değiştirebilirsiniz.
+
+Rediste, anahtarlarda depolanan verileri silmek için de bir python kodu ekledim.
+  
 
 Redis sunucusunu kurmak için bu siteyi ziyaret edip faydalanabilirsiniz: https://redis.io/docs/getting-started/installation/install-redis-on-linux/
 
