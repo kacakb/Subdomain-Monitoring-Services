@@ -40,7 +40,7 @@ while True:
 
             # Eğer subdomain, rediste mevcut değilse discord webhookua mesaj gönder.
             if not exists:
-                # Add the subdomain to Redis
+                # Subdomaini redis'e ekle
                 r.sadd(f"{domain}_subdomains", subdomain)
 
                 # Eğer mevcut değilse discord web hookuna mesaj gönder
