@@ -9,7 +9,7 @@ r = redis.Redis(host='localhost', port=6379, db=0)
 # SecurityTrails api key tanımla
 securitytrails_api_key = "YOUR_API_KEY"
 
-# Discord api web hook url tanımla
+# Discord web hook url tanımla
 webhook_url = "YOUR_DISCORD_WEB_HOOK"
 
 # Domainleri tanımla
