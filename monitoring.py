@@ -33,7 +33,7 @@ while True:
             print(f"Subdomains not found for {domain}")
             continue
 
-        # Loop through each subdomain
+        # Her subdomaini döngüye al
         for subdomain in subdomains:
             # Subdomainle redis veritabanında mevcut mu 
             exists = r.sismember(f"{domain}_subdomains",subdomain)
