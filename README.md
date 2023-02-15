@@ -29,8 +29,11 @@ Redis sunucusunu yükleyip,kurduktan sonra:
        
 /
 redis-cli
+
 KEYS *
+
 x.com_subdomains
+
 y.com_subdomains
 /
 
